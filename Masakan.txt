@@ -1,68 +1,3 @@
-Ayam Goreng
-Daging Ayam
-1
-Garam
-1
-Minyak Goreng
-3
-Bawang Putih
-2
-###
-Haluskan bawang putih dan garam
-Lumuri ayam dengan bumbu
-Diamkan beberapa menit
-Panaskan minyak goreng
-Goreng ayam hingga matang
-###
-Ayam Sambal Merah
-Daging Ayam
-1
-Cabai Merah
-4
-Bawang Merah
-2
-Garam
-1
-Minyak Goreng
-2
-###
-Goreng ayam hingga matang
-Haluskan cabai merah dan bawang merah
-Panaskan minyak goreng
-Tumis bumbu halus
-Tambahkan garam
-Campurkan dengan ayam
-###
-Kue Sederhana
-Tepung Terigu
-5
-Gula Pasir
-3
-Telur
-2
-###
-Campurkan tepung terigu dan gula pasir
-Masukkan telur
-Aduk hingga merata
-Tuang ke loyang
-Panggang hingga matang
-###
-Nasi Ayam Goreng
-Beras
-1
-Daging Ayam
-1
-Garam
-1
-Minyak Goreng
-2
-###
-Masak beras menjadi nasi
-Bumbui daging ayam dengan garam
-Panaskan minyak goreng
-Goreng ayam hingga matang
-Sajikan bersama nasi
-###
 Nasi Goreng Ayam
 Beras
 1
@@ -84,18 +19,21 @@ Masukkan daging ayam
 Tambahkan nasi dan garam
 Aduk hingga merata
 ###
-Sambal Merah
-Cabai Merah
-5
-Bawang Merah
-3
+Ayam Goreng
+Daging Ayam
+1
 Garam
 1
+Minyak Goreng
+3
+Bawang Putih
+2
 ###
-Cuci cabai dan bawang merah
-Haluskan semua bahan
-Tambahkan garam
-Aduk hingga rata
+Haluskan bawang putih dan garam
+Lumuri ayam dengan bumbu
+Diamkan beberapa menit
+Panaskan minyak goreng
+Goreng ayam hingga matang
 ###
 Telur Dadar
 Telur
@@ -110,4 +48,66 @@ Tambahkan garam
 Kocok hingga rata
 Panaskan minyak goreng
 Masak telur hingga matang
+###
+Kue Sederhana
+Tepung Terigu
+5
+Gula Pasir
+3
+Telur
+2
+###
+Campurkan tepung terigu dan gula pasir
+Masukkan telur
+Aduk hingga merata
+Tuang ke loyang
+Panggang hingga matang
+###
+Sambal Merah
+Cabai Merah
+5
+Bawang Merah
+3
+Garam
+1
+###
+Cuci cabai dan bawang merah
+Haluskan semua bahan
+Tambahkan garam
+Aduk hingga rata
+###
+Nasi Ayam Goreng
+Beras
+1
+Daging Ayam
+1
+Garam
+1
+Minyak Goreng
+2
+###
+Masak beras menjadi nasi
+Bumbui daging ayam dengan garam
+Panaskan minyak goreng
+Goreng ayam hingga matang
+Sajikan bersama nasi
+###
+Ayam Sambal Merah
+Daging Ayam
+1
+Cabai Merah
+4
+Bawang Merah
+2
+Garam
+1
+Minyak Goreng
+2
+###
+Goreng ayam hingga matang
+Haluskan cabai merah dan bawang merah
+Panaskan minyak goreng
+Tumis bumbu halus
+Tambahkan garam
+Campurkan dengan ayam
 ###

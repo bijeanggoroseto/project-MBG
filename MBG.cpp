@@ -17,8 +17,8 @@ struct Bahan{
     void print(){
         cout << left
              << "| " << setw(18) << nama 
-             << "| " << setw(18) << supplier
-             << "| " << setw(13) << jumlah
+             << "| " << setw(25) << supplier
+             << "| " << setw(10) << jumlah
              << setw(1) << "|"
              << '\n';
     }
@@ -26,7 +26,7 @@ struct Bahan{
 
 struct BahanMasak{
     int jumlah;
-    string nama;
+    Bahan* bahan;
 };
 
 struct Masakan{
@@ -51,8 +51,27 @@ int inputInt(string text){
             cout << "Invalid Input.\n";
             continue;
         }
-        return test;
+        else{break;}
     }
+    cin.ignore();
+    return test;
+}
+
+char inputYesOrNo(string text){
+    char test;
+    while (true) {
+        cout << text;
+        cin >> test;
+        tolower(test);
+        if (cin.peek() != '\n' || (test != 'n' && test != 'y')) {
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cout << "Invalid Input.\n";
+            continue;
+        }
+        else{break;}
+    }
+    cin.ignore();
+    return test;
 }
 
 void enterToContinue(){
@@ -61,8 +80,16 @@ void enterToContinue(){
     getline(cin, line);
 }
 
+int searchNamaBahan(vector<Bahan*>& bahan, string& target, int left, int right){
+    if(left > right){return -1;}
+    int mid = (left + right)/2;
+    if(bahan[mid]->nama == target){return  mid;}
+    else if(target < bahan[mid]->nama){return searchNamaBahan(bahan, target, left, mid - 1);}
+    else{return searchNamaBahan(bahan, target, mid + 1, right);}
+}
+
 template <typename T>
-int searchNama(vector<T> arr, string target, int left, int right){
+int searchNama(vector<T>& arr, string& target, int left, int right){
     if(left > right){return -1;}
     int mid = (left + right)/2;
     if(arr[mid].nama == target){return  mid;}
@@ -70,17 +97,42 @@ int searchNama(vector<T> arr, string target, int left, int right){
     else{return searchNama(arr, target, mid + 1, right);}
 }
 
-void simpanFileBahan(vector<Bahan>& arr){
-    int size = arr.size();
+void insertSortedNamaBahan(vector<Bahan*>& bahan, Bahan* target){
+    bahan.push_back(target);
+    int last = bahan.size() - 1;
+    Bahan* temp = bahan[last];
+    int j = last - 1;
+    while(j >= 0 && bahan[j]->nama > temp->nama){
+        bahan[j + 1] = bahan[j];
+        j--;
+    }
+    bahan[j + 1] = temp;  
+}
+
+template <typename T>
+void insertSortedNama(vector<T>& arr, T target){
+    arr.push_back(target);
+    int last = arr.size() - 1;
+    T temp = arr[last];
+    int j = last - 1;
+    while(j >= 0 && arr[j].nama > temp.nama){
+        arr[j + 1] = arr[j];
+        j--;
+    }
+    arr[j + 1] = temp;  
+}
+
+void simpanFileBahan(vector<Bahan*>& bahan){
+    int size = bahan.size();
     ofstream FILE("Bahan.txt");
     if(!FILE.is_open()){
         cout << "file bahan gagal dibuka" << endl;
         return;
     }
     for(int i = 0; i < size; i++){
-        FILE << arr[i].nama << "\n";
-        FILE << arr[i].supplier << "\n";
-        FILE << arr[i].jumlah << "\n";
+        FILE << bahan[i]->nama << "\n";
+        FILE << bahan[i]->supplier << "\n";
+        FILE << bahan[i]->jumlah << "\n";
     }
     FILE.close();
 }
@@ -96,7 +148,7 @@ void simpanFileMasakan(vector<Masakan>& arr){
         FILE << arr[i].nama << "\n";
         subsize = arr[i].bahanMasak.size();
         for(int j = 0; j < subsize; j++){
-            FILE << arr[i].bahanMasak[j].nama << "\n";
+            FILE << arr[i].bahanMasak[j].bahan->nama << "\n";
             FILE << arr[i].bahanMasak[j].jumlah << "\n";
         }
         FILE << "###\n";
@@ -125,116 +177,114 @@ void simpanFileUser(vector<User>& arr){
     FILE.close();
 }
 
-void initFile(vector<Bahan>& bahan, vector<Masakan>& makanan){
-    Bahan temp1;
-    string strtemp;
-    Masakan temp2;
-    BahanMasak temp3;
+void initFile(vector<Bahan*>& bahan, vector<Masakan>& masakan){
+    Bahan tempBahan;
+    Masakan tempMasakan;
     
     ifstream FILE("Bahan.txt");
     if(!FILE.is_open()){cout << "gagal membuka file bahan" << endl; return;}
 
-    while(getline(FILE, temp1.nama)){
-        getline(FILE, temp1.supplier);
-        FILE >> temp1.jumlah;
+    while(getline(FILE, tempBahan.nama)){
+        getline(FILE, tempBahan.supplier);
+        FILE >> tempBahan.jumlah;
         FILE.ignore();
-        bahan.push_back(temp1);
+        Bahan* p = new Bahan(tempBahan);
+        insertSortedNamaBahan(bahan, p);
     }
     FILE.close();
-    FILE.open("Makanan.txt");
+
+    bool valid = true;
+    FILE.open("Masakan.txt");
     if(!FILE.is_open()){cout << "gagal membuka file makanan" << endl; return;}
-    while(getline(FILE, temp2.nama)){
+    while(getline(FILE, tempMasakan.nama)){
+        string tempString;
         while(true){
-            getline(FILE, strtemp);
-            if(strtemp == "###"){break;}
-            temp3.nama = strtemp;
-            FILE >> temp3.jumlah;
+            BahanMasak tempBahanMasak;
+            getline(FILE, tempString);
+            if(tempString == "###"){break;}
+            int index = searchNamaBahan(bahan, tempString, 0, bahan.size() - 1);
+            if(index == -1){valid = false; break;}
+            tempBahanMasak.bahan = bahan[index];
+            FILE >> tempBahanMasak.jumlah; 
             FILE.ignore();
-            temp2.bahanMasak.push_back(temp3);
+            tempMasakan.bahanMasak.push_back(tempBahanMasak);
         }
+
+        if(!valid){
+            cout << "masakan tidak valid karena data bahan masakan tidak ada di data bahan." << endl;
+            break;
+        }
+
         while(true){
-            getline(FILE, strtemp);
-            if(strtemp == "###"){break;}
-            temp2.langkahMasak.push_back(strtemp);
+            getline(FILE, tempString);
+            if(tempString == "###"){break;}
+            tempMasakan.langkahMasak.push_back(tempString);
         }
-        makanan.push_back(temp2);
-        temp2.bahanMasak.clear();
-        temp2.langkahMasak.clear();
+        insertSortedNama(masakan, tempMasakan);
+        tempMasakan.bahanMasak.clear();
+        tempMasakan.langkahMasak.clear();
     }
     FILE.close();
 }
 
-void tampilkanBahan(vector<Bahan>& arr){
-    int size = arr.size();
+void tampilkanBahan(vector<Bahan*>& bahan){
+    int size = bahan.size();
     if(size == 0){cout << "\nlist bahan masih kosong." << endl;cin.ignore(); enterToContinue(); return;}
-    cout << string(56, '-') << endl;
+    cout << string(60, '-') << endl;
     cout << left
          << setw(20) << "| nama" 
-         << setw(20) << "| supplier"
-         << setw(15) << "| jumlah"
+         << setw(27) << "| supplier"
+         << setw(12) << "| jumlah"
          << setw(1) << "|"
          << '\n';
-    cout << string(56, '-') << endl;
+    cout << string(60, '-') << endl;
     for(int i = 0; i < size; i++){
-        arr[i].print();
+        bahan[i]->print();
     }
-    cout << string(56, '-') << endl;
+    cout << string(60, '-') << endl;
     cout << "Semua data telah ditampilkan";
     cin.ignore(); enterToContinue();
 }
 
-void tampilkanMasakan(vector<Masakan>& arr){
-    int size = arr.size();
+void tampilkanMasakan(vector<Masakan>& masakan){
+    int size = masakan.size();
     if(size == 0){cout << "\nlist bahan masih kosong." << endl; cin.ignore(); enterToContinue(); return;}
-    cout<<"\n=================================\n";
+    cout << string(42, '-') << endl;
     for(int i = 0; i < size; i++){
-        cout<< i+1;
-        cout<<". "<< arr[i].nama;
-        cout<<"\n================================="<<endl;
+        cout << "| " << i+1;
+        cout <<". " << left << setw(35) << masakan[i].nama << "|" << endl;
+        cout << string(42, '-') << endl;;
     }
     cout << "Semua data telah ditampilkan"<< endl;
     cin.ignore(); enterToContinue();
 }
 
-template <typename T>
-void insertSortedNama(vector<T>& arr, T target){
-    arr.push_back(target);
-    int last = arr.size() - 1;
-    T temp = arr[last];
-    int j = last - 1;
-    while(j >= 0 && arr[j].nama > temp.nama){
-        arr[j + 1] = arr[j];
-        j--;
-    }
-    arr[j + 1] = temp;  
-}
-
-void sortingBahanJumlahAsc(vector<Bahan> arr){
-    int size = arr.size();
+void sortingBahanJumlahAsc(vector<Bahan*> bahan){
+    int size = bahan.size();
     for(int i = 1; i < size; i++){
-        Bahan temp = arr[i];
+        Bahan* temp = bahan[i];
         int j = i-1;
-        while(j >= 0 && arr[j].jumlah > temp.jumlah){
-            arr[j + 1] = arr[j];
+        while(j >= 0 && bahan[j]->jumlah > temp->jumlah){
+            bahan[j + 1] = bahan[j];
             j--;
         }
-        arr[j + 1] = temp;  
+        bahan[j + 1] = temp;  
     }
-    tampilkanBahan(arr);
+    tampilkanBahan(bahan);
 }
 
-void sortingBahanJumlahDesc(vector<Bahan> arr){
-    int size = arr.size();
+void sortingBahanJumlahDesc(vector<Bahan*> bahan){
+    int size = bahan.size();
     for(int i = 1; i < size; i++){
-        Bahan temp = arr[i];
+        Bahan* temp = bahan[i];
         int j = i-1;
-        while(j >= 0 && arr[j].jumlah < temp.jumlah){
-            arr[j + 1] = arr[j];
+        while(j >= 0 && bahan[j]->jumlah < temp->jumlah){
+            bahan[j + 1] = bahan[j];
             j--;
         }
-        arr[j + 1] = temp;  
+        bahan[j + 1] = temp;  
     }
-    tampilkanBahan(arr);
+    tampilkanBahan(bahan);
 }
 
 bool regis(vector<User>& users){
@@ -298,7 +348,7 @@ bool loginOrRegis(){
     
     char menu;
     do{
-        cout << "=================== MBG =================" << endl;
+        cout << "================= MBG ===============" << endl;
         cout << "1. Login" << endl;
         cout << "2. Register" << endl;
         cout << "3. Exit" << endl;
@@ -331,59 +381,73 @@ bool loginOrRegis(){
     return true;
 }
 
-void inputBahan(vector<Bahan>& arr){
-    int quantity, size = arr.size();
+void inputBahan(vector<Bahan*>& bahan){
+    int quantity, size = bahan.size();
     quantity = inputInt("berapa bahan yang ingin diinput: ");
     quantity += size;
     for(int i = size; i < quantity; i++){
-        Bahan temp;
+        Bahan* temp;
         cin.ignore();
         cout << "bahan ke-" << i+1 << endl;
         cout << "masukan nama bahan: "; 
-        getline(cin, temp.nama);
+        getline(cin, temp->nama);
         cout << "masukan nama supplier: "; 
-        getline(cin, temp.supplier);
-        temp.jumlah = inputInt("masukan jumlah bahan: ");
-        insertSortedNama(arr, temp);
+        getline(cin, temp->supplier);
+        temp->jumlah = inputInt("masukan jumlah bahan: ");
+        insertSortedNamaBahan(bahan, temp);
     }
     cout<< "\nSemua data selesai diinput YEAYYYYY";
     cin.ignore(); enterToContinue();
 }
 
-void inputMasakan(vector<Masakan>& arr){
-    int quantity, size = arr.size();
+void inputMasakan(vector<Masakan>& masakan, vector<Bahan*>& bahan){
+    int quantity, size = masakan.size();
     quantity = inputInt("berapa makanan yang ingin diinput: ");
     quantity += size;
+
     for(int i = size; i < quantity; i++){
         Masakan temp;
         cin.ignore();
-        cout << "makanan ke-" << i+1 << endl;
-        cout << "masukan nama makanan: "; 
+        cout << "masakan ke-" << i+1 << endl;
+        cout << "masukan nama masakan: "; 
         getline(cin, temp.nama);
+
+        bool bahanMasakanValid;
         cout << "masukan bahan-bahan (ketik '###' pada baris baru untuk mengakhiri): " << endl; 
         while(true){
             BahanMasak tempBahan;
-            getline(cin, tempBahan.nama);
-            if(tempBahan.nama == "###"){break;}
+            string tempNama;
+            getline(cin, tempNama);
+            if(tempNama == "###"){break;}
+            int index = searchNamaBahan(bahan, tempNama, 0, bahan.size() - 1);
+            if(index == -1){
+                cout << "bahan tidak ada di data. Pastikan bahan sudah ada di data bahan." << endl;
+                bahanMasakanValid = false;
+                break;
+            }
+            else{
+                tempBahan.bahan = bahan[index];
+            }
             tempBahan.jumlah = inputInt("berapa jumlah bahan yang akan dimasak: ");
-            cin.ignore();
             temp.bahanMasak.push_back(tempBahan);
         }
+        if(!bahanMasakanValid){continue;}
+
         cout << "masukan langkah-langkah (ketik '###' pada baris baru untuk mengakhiri): " << endl; 
         while(true){
-            string strtemp;
-            getline(cin, strtemp);
-            if(strtemp == "###"){break;}
-            temp.langkahMasak.push_back(strtemp);
+            string tempLangkah;
+            getline(cin, tempLangkah);
+            if(tempLangkah == "###"){break;}
+            temp.langkahMasak.push_back(tempLangkah);
         }
-        insertSortedNama(arr, temp);
+        insertSortedNama(masakan, temp);
     }
     cout<< "\nSemua data selesai diinput YEAYYYY"<< endl;
     enterToContinue();
 }
 
 int main(){
-    vector<Bahan> bahan;
+    vector<Bahan*> bahan;
     vector<Masakan> masakan;
     char mainMenu, subMenu;
     if(!loginOrRegis()){return 0;}
@@ -432,11 +496,11 @@ int main(){
                         int jumlah, size = bahan.size();
                         cin.ignore();
                         cout <<"bahan yang ingin ditambah: "; getline(cin, nama);
-                        int id = searchNama(bahan, nama, 0, size - 1);
+                        int id = searchNamaBahan(bahan, nama, 0, size - 1);
                         if(id == -1){cout << "Bahan tidak ada.\n"; break;}
 
                         jumlah = inputInt("jumlah yang ingin ditambah: ");
-                        bahan[id].jumlah += jumlah;
+                        bahan[id]->jumlah += jumlah;
                         cout << "berhasil menambah jumlah bahan" << endl;
                         cin.ignore(); enterToContinue();
                         break;
@@ -446,10 +510,35 @@ int main(){
                         cout << "masukan nama bahan: ";
                         cin.ignore();
                         getline(cin, target);
-                        int id = searchNama(bahan, target, 0, bahan.size() - 1);
+
+                        int id = searchNamaBahan(bahan, target, 0, bahan.size() - 1);
                         if(id == -1){cout << "bahan tidak ditemukan" << endl; enterToContinue(); break;}
+
+                        vector<string> namaMasakan;
+                        for(int i = 0; i < masakan.size(); i++){
+                            for(BahanMasak bm : masakan[i].bahanMasak){
+                                if(bm.bahan->nama == target){
+                                    namaMasakan.push_back(masakan[i].nama);
+                                }
+                            }
+                        }
+
+                        if(!namaMasakan.empty()){
+                            cout << "Bahan digunakan pada menu masakan lain. Jika menghapus bahan ini maka semua masakan yang menggunakannya juga akan dihapus.\n";
+                            if(inputYesOrNo("Yakin ingin menghapus? (y/n): ") == 'n'){
+                                break;
+                            }       
+                        }
+
+                        for(string nama : namaMasakan){
+                            int idMasakan = searchNama(masakan, nama, 0, masakan.size() - 1);
+                            masakan.erase(masakan.begin() + idMasakan);
+                        }
+
+                        delete bahan[id];
                         bahan.erase(bahan.begin() + id);
-                        cout << "bahan berhasil dihapus" << endl;
+
+                        cout << "bahan berhasil dihapus." << endl;
                         enterToContinue();
                         break;
                     }
@@ -494,18 +583,17 @@ int main(){
                         cout << "masukan nama bahan: ";
                         cin.ignore();
                         getline(cin, target);
-                        int id = searchNama(bahan, target, 0, bahan.size() - 1);
+                        int id = searchNamaBahan(bahan, target, 0, bahan.size() - 1);
                         if(id == -1){cout << "bahan tidak ditemukan" << endl; break;}
                         cout << "--------------------------------" << endl;
-                        cout << "nama: " << bahan[id].nama << endl;
-                        cout << "supplier: " << bahan[id].supplier << endl;
-                        cout << "jumlah: " << bahan[id].jumlah << endl;
+                        cout << "nama: " << bahan[id]->nama << endl;
+                        cout << "supplier: " << bahan[id]->supplier << endl;
+                        cout << "jumlah: " << bahan[id]->jumlah << endl;
                         cout << "--------------------------------" << endl;
                         enterToContinue();
                         break;
                     }
                     case '6':{
-                        simpanFileBahan(bahan);
                         break;
                     }
                     default:{
@@ -537,7 +625,7 @@ int main(){
 
                 switch(subMenu){
                     case '1':{
-                        inputMasakan(masakan);
+                        inputMasakan(masakan, bahan);
                         break;
                     }
                     case '2':{
@@ -545,7 +633,7 @@ int main(){
                         cout << "masukan nama makanan: ";
                         cin.ignore();
                         getline(cin, target);
-                        int id = searchNama(masakan, target, 0, bahan.size() - 1);
+                        int id = searchNama(masakan, target, 0, masakan.size() - 1);
                         if(id == -1){cout << "makanan tidak ditemukan" << endl; break;}
                         masakan.erase(masakan.begin() + id);
                         cout << "makanan berhasil dihapus" << endl;
@@ -569,7 +657,7 @@ int main(){
                         int subsize = masakan[id].bahanMasak.size();
                         cout << "\nbahan-bahan: " << endl;
                         for(int i = 0; i < subsize; i++){
-                            cout << i + 1 << ". " << masakan[id].bahanMasak[i].nama << " x" << masakan[id].bahanMasak[i].jumlah << endl;
+                            cout << i + 1 << ". " << masakan[id].bahanMasak[i].bahan->nama << " x" << masakan[id].bahanMasak[i].jumlah << endl;
                         }
                         subsize = masakan[id].langkahMasak.size();
                         cout << "\nlangkah memasak: " << endl;
@@ -594,27 +682,23 @@ int main(){
 
                         vector<int> idBahan;
                         bool bahanCukup = true;
-                        for(BahanMasak s : masakan[idMasakan].bahanMasak){
-                            int tempId = searchNama(bahan, s.nama, 0, bahan.size() - 1);
-                            if(tempId == -1 || bahan[tempId].jumlah < s.jumlah * jumlahMasak){
-                                cout << "Bahan tidak cukup.\n";
-                                bahanCukup = false;
+                        for(BahanMasak bm : masakan[idMasakan].bahanMasak){
+                            if(bm.bahan->jumlah < bm.jumlah * jumlahMasak){
+                                cout << "bahan tidak cukup untuk memasak." << endl;
+                                bahanCukup = false; 
                                 break;
                             }
-                            else{idBahan.push_back(tempId);}
                         }
                         if(bahanCukup){
-                            int size = idBahan.size();
-                            for(int i = 0; i < size; i++){
-                                bahan[idBahan[i]].jumlah -= masakan[idMasakan].bahanMasak[i].jumlah * jumlahMasak;
+                            for(BahanMasak bm : masakan[idMasakan].bahanMasak){
+                                bm.bahan->jumlah -= bm.jumlah * jumlahMasak;
                             }
-                            cout << "selesai memasak" << endl;
+                            cout << "selesai memasak." << endl;
                         }
-                        cin.ignore(); enterToContinue();
+                        enterToContinue();
                         break;
                     }
                     case '6':{
-                        simpanFileMasakan(masakan);
                         break;
                     }
                     default:{
@@ -629,6 +713,8 @@ int main(){
         }
         else if(mainMenu == '3'){
             cout << "bye bye admin SPPG Awokawokawok"<<endl;
+            simpanFileBahan(bahan);
+            simpanFileMasakan(masakan);
         }
         else{
             cout << "pilihan tidak ada di menu." << endl;

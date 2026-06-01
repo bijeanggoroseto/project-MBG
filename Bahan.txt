@@ -1,15 +1,30 @@
-kangkung
-pasar
-17
-keju
-keju
-44
-mie
-mieID
-212
-nasi
-pasar
-24
-pisang
-PT pisang
-400
+Bawang Merah
+CV Tani Segar
+35
+Bawang Putih
+CV Tani Segar
+30
+Beras
+PT Pangan Nasional
+200
+Cabai Merah
+PT Hortikultura Indonesia
+25
+Daging Ayam
+PT Unggas Prima
+45
+Garam
+CV Laut Bersih
+40
+Gula Pasir
+PT Manis Sejahtera
+60
+Minyak Goreng
+PT Sawit Nusantara
+50
+Telur
+PT Sumber Protein
+120
+Tepung Terigu
+CV Makmur Jaya
+80
