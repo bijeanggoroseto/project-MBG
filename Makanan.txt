@@ -1,0 +1,31 @@
+Mie Ayam
+mie
+2
+ayam
+5
+air
+10
+###
+masak
+sajikan
+###
+pisang mie
+mie
+1
+pisang
+2
+###
+masukkan mie
+masukkan pisang
+udah
+###
+sayur
+kangkung
+2
+nasi
+4
+###
+masak nasi
+masak kangkung
+sajikan
+###
