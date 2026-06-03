@@ -288,7 +288,11 @@ void sortingBahanJumlahDesc(vector<Bahan*> bahan){
 }
 
 bool regis(vector<User>& users){
-    cout << "============= REGISTRASI =============" << endl;
+
+    cout << string(50, '=') << endl;
+    cout << "|" << string(20, ' ') << "Register" << string(20, ' ') << "|" << endl;
+    cout << string(50, '=') << endl;
+
     User temp;
     cin.ignore();
     cout << "masukan username: ";
@@ -311,7 +315,11 @@ bool regis(vector<User>& users){
 bool login(vector<User>& users){
     string temp;
     cin.ignore();
-    cout << "=============== LOGIN ===============" << endl;
+
+    cout << string(50, '=') << endl;
+    cout << "|" << string(21, ' ') << "Login" << string(22, ' ') << "|" << endl;
+    cout << string(50, '=') << endl;
+
     for(int i = 2;  i >= 0; i--){
         cout<< "masukan username: ";
         getline(cin, temp);
@@ -348,7 +356,9 @@ bool loginOrRegis(){
     
     char menu;
     do{
-        cout << "================= MBG ===============" << endl;
+        cout << string(50, '=') << endl;
+        cout << "|" << string(17, ' ') << "MBG MANGEMENT" << string(18, ' ') << "|" << endl;
+        cout << string(50, '=') << endl;
         cout << "1. Login" << endl;
         cout << "2. Register" << endl;
         cout << "3. Exit" << endl;
@@ -450,12 +460,17 @@ int main(){
     vector<Bahan*> bahan;
     vector<Masakan> masakan;
     char mainMenu, subMenu;
+
     if(!loginOrRegis()){return 0;}
+
     cout<< "\nSELAMAT DATANG ADMIN SPPG UPNVY\n"<< endl;
 
     initFile(bahan, masakan);
     do{
-        cout <<"========== MENU UTAMA SPPG UPNVY ==========" << endl;
+        cout << string(50, '=') << endl;
+        cout << "|" << string(19, ' ') << "Menu Utama" << string(19, ' ') << "|" << endl;
+        cout << string(50, '=') << endl;
+        
         cout <<"1. Atur Bahan Makanan"<<endl;
         cout <<"2. Atur Menu Makanan"<<endl;
         cout <<"3. KELUAR!"<<endl;
@@ -470,13 +485,17 @@ int main(){
 
         if(mainMenu == '1'){
             do{
-                cout<< "\n========== MENU BAHAN ==========" <<endl;
-                cout<< "1. Input bahan makanan" <<endl;
+                cout << string(50, '=') << endl;
+                cout << "|" << string(19, ' ') << "Atur Bahan" << string(19, ' ') << "|" << endl;
+                cout << string(50, '=') << endl;
+
+                cout<< "1. Input bahan masakan" <<endl;
                 cout<< "2. Tambah jumlah bahan" <<endl;
-                cout<< "3. Hapus bahan" <<endl;
-                cout<< "4. Tampilkan bahan makanan" <<endl;
-                cout<< "5. Cari bahan makanan" <<endl;
-                cout<< "6. keluar" <<endl;
+                cout<< "3. Edit bahan" << endl;
+                cout<< "4. Hapus bahan" <<endl;
+                cout<< "5. Tampilkan bahan masakan" <<endl;
+                cout<< "6. Cari bahan masakan" <<endl;
+                cout<< "7. keluar" <<endl;
                 cout<< "pilih menu (1-6): "; cin >> subMenu;
 
                 if(cin.peek() != '\n'){
@@ -488,10 +507,18 @@ int main(){
 
                 switch(subMenu){
                     case '1':{
+                        cout << string(50, '=') << endl;
+                        cout << "|" << string(18, ' ') << "Input Bahan" << string(18, ' ') << "|" << endl;
+                        cout << string(50, '=') << endl;
+
                         inputBahan(bahan);
                         break;
                     }
                     case '2':{
+                        cout << string(50, '=') << endl;
+                        cout << "|" << string(16, ' ') << "Tambah Stok Bahan" << string(15, ' ') << "|" << endl;
+                        cout << string(50, '=') << endl;
+
                         string nama;
                         int jumlah, size = bahan.size();
                         cin.ignore();
@@ -506,6 +533,31 @@ int main(){
                         break;
                     }
                     case '3':{
+                        cout << string(50, '=') << endl;
+                        cout << "|" << string(19, ' ') << "Edit Bahan" << string(19, ' ') << "|" << endl;
+                        cout << string(50, '=') << endl;
+
+                        string target;
+                        cout << "masukan nama bahan: ";
+                        cin.ignore();
+                        getline(cin, target);
+
+                        int id = searchNamaBahan(bahan, target, 0, bahan.size() - 1);
+                        if(id == -1){cout << "bahan tidak ditemukan" << endl; enterToContinue(); break;}
+
+                        cout << "nama baru: ";
+                        getline(cin, bahan[id]->nama);
+                        cout << "supplier baru: ";
+                        getline(cin, bahan[id]->supplier);
+                        cout << "Bahan berhasil diedit" << endl;
+                        enterToContinue();
+                        break;
+                    }
+                    case '4':{
+                        cout << string(50, '=') << endl;
+                        cout << "|" << string(19, ' ') << "Hapus Bahan" << string(18, ' ') << "|" << endl;
+                        cout << string(50, '=') << endl;
+
                         string target;
                         cout << "masukan nama bahan: ";
                         cin.ignore();
@@ -538,16 +590,20 @@ int main(){
                         delete bahan[id];
                         bahan.erase(bahan.begin() + id);
 
-                        cout << "bahan berhasil dihapus." << endl;
+                        cout << "Bahan berhasil dihapus." << endl;
                         enterToContinue();
                         break;
                     }
-                    case '4':{
+                    case '5':{
                         int menuTampilan;
-                        cout<<"\n========== MENU TAMPILAN ==========";
-                        cout<<"\n1. berdasarkan abjad";
-                        cout<<"\n2. berdasarkan jumlah stok terkecil";
-                        cout<<"\n3. berdasarkan jumlah stok terbanyak";
+
+                        cout << string(50, '=') << endl;
+                        cout << "|" << string(16, ' ') << "Pilihan Tampilan" << string(16, ' ') << "|" << endl;
+                        cout << string(50, '=') << endl;
+
+                        cout<<"1. Berdasarkan abjad";
+                        cout<<"\n2. Berdasarkan jumlah stok terkecil";
+                        cout<<"\n3. Berdasarkan jumlah stok terbanyak";
                         cout<<"\npilih menu (1-3): "; cin >> menuTampilan;
 
                         if(cin.peek() != '\n'){
@@ -578,13 +634,18 @@ int main(){
                         }
                         break;
                     }
-                    case '5':{
+                    case '6':{
+                        cout << string(50, '=') << endl;
+                        cout << "|" << string(18, ' ') << "Detail Bahan" << string(18, ' ') << "|" << endl;
+                        cout << string(50, '=') << endl;
+
                         string target;
                         cout << "masukan nama bahan: ";
                         cin.ignore();
                         getline(cin, target);
                         int id = searchNamaBahan(bahan, target, 0, bahan.size() - 1);
-                        if(id == -1){cout << "bahan tidak ditemukan" << endl; break;}
+                        if(id == -1){cout << "bahan tidak ditemukan" << endl; enterToContinue; break;}
+
                         cout << "--------------------------------" << endl;
                         cout << "nama: " << bahan[id]->nama << endl;
                         cout << "supplier: " << bahan[id]->supplier << endl;
@@ -593,7 +654,7 @@ int main(){
                         enterToContinue();
                         break;
                     }
-                    case '6':{
+                    case '7':{
                         break;
                     }
                     default:{
@@ -607,12 +668,15 @@ int main(){
         }
         else if(mainMenu == '2'){
             do{
-                cout<< "========== MENU MAKANAN ==========" <<endl;
-                cout<< "1. Input menu makanan" <<endl;
-                cout<< "2. Hapus menu makanan" <<endl;
-                cout<< "3. Tampilkan menu makanan" <<endl;
-                cout<< "4. Cari  menu makanan" <<endl;
-                cout<< "5. Masak makanan" <<endl;
+                cout << string(50, '=') << endl;
+                cout << "|" << string(18, ' ') << "Atur Masakan" << string(18, ' ') << "|" << endl;
+                cout << string(50, '=') << endl;
+
+                cout<< "1. Input menu masakan" <<endl;
+                cout<< "2. Hapus menu masakan" <<endl;
+                cout<< "3. Tampilkan menu masakan" <<endl;
+                cout<< "4. Cari  menu masakan" <<endl;
+                cout<< "5. Masak masakan" <<endl;
                 cout<< "6. keluar" <<endl;
                 cout<< "pilih menu (1-6): "; cin>> subMenu;
 
@@ -625,11 +689,19 @@ int main(){
 
                 switch(subMenu){
                     case '1':{
+                        cout << string(50, '=') << endl;
+                        cout << "|" << string(18, ' ') << "Input Masakan" << string(17, ' ') << "|" << endl;
+                        cout << string(50, '=') << endl;
+
                         inputMasakan(masakan, bahan);
                         break;
                     }
                     case '2':{
                         string target;
+                        cout << string(50, '=') << endl;
+                        cout << "|" << string(18, ' ') << "Hapus Masakan" << string(17, ' ') << "|" << endl;
+                        cout << string(50, '=') << endl;
+
                         cout << "masukan nama makanan: ";
                         cin.ignore();
                         getline(cin, target);
@@ -641,11 +713,19 @@ int main(){
                         break;
                     }
                     case '3':{
+                        cout << string(50, '=') << endl;
+                        cout << "|" << string(17, ' ') << "Daftar Masakan" << string(17, ' ') << "|" << endl;
+                        cout << string(50, '=') << endl;
+
                         tampilkanMasakan(masakan);
                         break;
                     }
                     case '4':{
                         string target;
+                        cout << string(50, '=') << endl;
+                        cout << "|" << string(18, ' ') << "Cari Masakan" << string(18, ' ') << "|" << endl;
+                        cout << string(50, '=') << endl;
+
                         cout << "masukan nama makanan: ";
                         cin.ignore();
                         getline(cin, target);
@@ -671,6 +751,10 @@ int main(){
                     }
                     case '5':{
                         string target;
+                        cout << string(50, '=') << endl;
+                        cout << "|" << string(18, ' ') << "Masak - Masak" << string(17, ' ') << "|" << endl;
+                        cout << string(50, '=') << endl;
+
                         cout << "masukan nama makanan: ";
                         cin.ignore();
                         getline(cin, target);
