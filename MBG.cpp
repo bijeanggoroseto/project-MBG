@@ -396,11 +396,18 @@ void inputBahan(vector<Bahan*>& bahan){
     quantity = inputInt("berapa bahan yang ingin diinput: ");
     quantity += size;
     for(int i = size; i < quantity; i++){
-        Bahan* temp;
-        cin.ignore();
+        Bahan* temp = new Bahan;
         cout << "bahan ke-" << i+1 << endl;
         cout << "masukan nama bahan: "; 
         getline(cin, temp->nama);
+
+        if(searchNamaBahan(bahan, temp->nama, 0, bahan.size() - 1) != -1){
+            cout << "nama bahan sudah ada." << endl;
+            enterToContinue();
+            delete temp;
+            return;
+        }
+
         cout << "masukan nama supplier: "; 
         getline(cin, temp->supplier);
         temp->jumlah = inputInt("masukan jumlah bahan: ");
@@ -417,10 +424,15 @@ void inputMasakan(vector<Masakan>& masakan, vector<Bahan*>& bahan){
 
     for(int i = size; i < quantity; i++){
         Masakan temp;
-        cin.ignore();
         cout << "masakan ke-" << i+1 << endl;
         cout << "masukan nama masakan: "; 
         getline(cin, temp.nama);
+
+        if(searchNama(masakan, temp.nama, 0, masakan.size() - 1) != -1){
+            cout << "nama masakan sudah ada." << endl;
+            enterToContinue();
+            return;
+        }
 
         bool bahanMasakanValid = true;
         cout << "masukan bahan-bahan (ketik '###' pada baris baru untuk mengakhiri): " << endl; 
@@ -530,7 +542,7 @@ int main(){
                         jumlah = inputInt("jumlah yang ingin ditambah: ");
                         bahan[id]->jumlah += jumlah;
                         cout << "berhasil menambah jumlah bahan" << endl;
-                        cin.ignore(); enterToContinue();
+                        enterToContinue();
                         break;
                     }
                     case '3':{
