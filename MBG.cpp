@@ -139,7 +139,7 @@ void simpanFileBahan(vector<Bahan*>& bahan){
 
 void simpanFileMasakan(vector<Masakan>& arr){
     int size = arr.size(), subsize;
-    ofstream FILE("Makanan.txt");
+    ofstream FILE("Masakan.txt");
     if(!FILE.is_open()){
         cout << "file makanan gagal dibuka" << endl;
         return;
@@ -422,7 +422,7 @@ void inputMasakan(vector<Masakan>& masakan, vector<Bahan*>& bahan){
         cout << "masukan nama masakan: "; 
         getline(cin, temp.nama);
 
-        bool bahanMasakanValid;
+        bool bahanMasakanValid = true;
         cout << "masukan bahan-bahan (ketik '###' pada baris baru untuk mengakhiri): " << endl; 
         while(true){
             BahanMasak tempBahan;
@@ -441,7 +441,7 @@ void inputMasakan(vector<Masakan>& masakan, vector<Bahan*>& bahan){
             tempBahan.jumlah = inputInt("berapa jumlah bahan yang akan dimasak: ");
             temp.bahanMasak.push_back(tempBahan);
         }
-        if(!bahanMasakanValid){continue;}
+        if(!bahanMasakanValid){return;}
 
         cout << "masukan langkah-langkah (ketik '###' pada baris baru untuk mengakhiri): " << endl; 
         while(true){
@@ -466,6 +466,7 @@ int main(){
     cout<< "\nSELAMAT DATANG ADMIN SPPG UPNVY\n"<< endl;
 
     initFile(bahan, masakan);
+    
     do{
         cout << string(50, '=') << endl;
         cout << "|" << string(19, ' ') << "Menu Utama" << string(19, ' ') << "|" << endl;
